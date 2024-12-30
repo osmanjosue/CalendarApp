@@ -1,6 +1,6 @@
 export const NavBar = () => {
   return (
-    <div className="navbar navbar-dark bg-dark mb-4 px-4 navbar-container vw-100 position-absolute top-0">
+    <div className="navbar navbar-dark bg-dark mb-4 px-4 navbar-container vw-100">
       <span className="navbar-brand">
         <i className="fas fa-calendar-alt"></i>
         &nbsp;
