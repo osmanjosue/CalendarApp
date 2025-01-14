@@ -23,7 +23,7 @@ const events = [
 ];
 
 export const CalendarPage = () => {
-  const { openDateModal } = useUiStore();
+  const { openDateModal, closeDateModal } = useUiStore();
   const [lastView, setLastView] = useState(
     localStorage.getItem('lastView') || 'week'
   );
