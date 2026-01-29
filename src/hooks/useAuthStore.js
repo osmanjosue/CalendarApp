@@ -22,6 +22,23 @@ export const useAuthStore = () => {
         }
     }
 
+    //startRegister
+
+    const startRegister = async({email, password, name}) => {
+        dispatch(onChecking());
+        try {
+            const {data} = await calendarApi.post('/auth/new', { name, email, password });
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('token-init-date', new Date().getTime());
+            dispatch(onLogin({ name: data.name, uid: data.uid }));
+        } catch (error) {
+            dispatch(onLogout(error.response.data?.msg || 'Error en el registro takataka'));
+            setTimeout(() => {
+                dispatch(clearErrorMessage());
+            }, 10);
+        }
+    }
+
     return {
         //*Properties
         errorMessage,
@@ -29,5 +46,6 @@ export const useAuthStore = () => {
         user,
         //*Methods
         startLogin,
+        startRegister,
     }
 }
