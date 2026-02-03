@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from "react-redux"
 import { onAddNewEvent, onDeleteEvent, onSetActiveEvent, onUpdateEvent } from "../store";
+import calendarApi from "../api/calendarApi";
 
 export const useCalendarStore = () => {
 
@@ -7,19 +8,21 @@ export const useCalendarStore = () => {
 
     const { events, activeEvent } = useSelector(state => state.calendar);
 
+    const {user} = useSelector(state => state.auth);
+
     const setActiveEvent = (calendarEvent) => {
         dispatch(onSetActiveEvent(calendarEvent))
     }
 
     const startSavingEvent = async (calendarEvent) => {
-        //TODO: Llegar al backend
-
-        //TODO: Todo Bien
+        //TODO: Update event        
         if (calendarEvent._id) {
             //Actualizado
             dispatch(onUpdateEvent({ ...calendarEvent }));
         } else {
-            dispatch(onAddNewEvent({ ...calendarEvent, _id: new Date().getTime() }));
+            //Creando
+            const {data} = await calendarApi.post('/events', calendarEvent);            
+            dispatch(onAddNewEvent({ ...calendarEvent, id: data.evento.id, user }));
         }
     }
 
