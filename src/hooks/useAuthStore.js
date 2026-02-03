@@ -10,7 +10,7 @@ export const useAuthStore = () => {
     const startLogin = async ({ email, password }) => {
         dispatch(onChecking());
         try {
-            const {data} = await calendarApi.post('/auth', { email, password });
+            const { data } = await calendarApi.post('/auth', { email, password });
             localStorage.setItem('token', data.token);
             localStorage.setItem('token-init-date', new Date().getTime());
             dispatch(onLogin({ name: data.name, uid: data.uid }));
@@ -24,10 +24,10 @@ export const useAuthStore = () => {
 
     //startRegister
 
-    const startRegister = async({email, password, name}) => {
+    const startRegister = async ({ email, password, name }) => {
         dispatch(onChecking());
         try {
-            const {data} = await calendarApi.post('/auth/new', { name, email, password });
+            const { data } = await calendarApi.post('/auth/new', { name, email, password });
             localStorage.setItem('token', data.token);
             localStorage.setItem('token-init-date', new Date().getTime());
             dispatch(onLogin({ name: data.name, uid: data.uid }));
@@ -39,12 +39,28 @@ export const useAuthStore = () => {
         }
     }
 
+    const checkAuthToken = async () => {
+        const token = localStorage.getItem('token');
+        if (!token) return dispatch(onLogout('No hay token'));
+
+        try {
+            const { data } = await calendarApi.get('/auth/renew');
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('token-init-date', new Date().getTime());
+            dispatch(onLogin({ name: data.name, uid: data.uid }));
+        } catch (error) {
+            localStorage.clear();
+            dispatch(onLogout('Token no válido'));
+        }
+    }
+
     return {
         //*Properties
         errorMessage,
         status,
         user,
         //*Methods
+        checkAuthToken,
         startLogin,
         startRegister,
     }
